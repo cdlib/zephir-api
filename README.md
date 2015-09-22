@@ -18,16 +18,14 @@ When available, the following content types are supported:
 
 ## Access Services
 
-Documentation
-http://zephir.cdlib.org/api/documentation
+Documentation: http://zephir.cdlib.org/api/documentation
 
-Item API:
-http://zephir.cdlib.org/api/item/{HT_ID}
+Item API: http://zephir.cdlib.org/api/item/{HT_ID}
 
 For example:
-http://zephir.cdlib.org/api/item/mdp.39015012078393 (default to XML output)
-http://zephir.cdlib.org/api/item/mdp.39015012078393.xml
-http://zephir.cdlib.org/api/item/mdp.39015012078393.json
+* http://zephir.cdlib.org/api/item/mdp.39015012078393 (default to XML output)
+* http://zephir.cdlib.org/api/item/mdp.39015012078393.xml
+* http://zephir.cdlib.org/api/item/mdp.39015012078393.json
 
 ## Start/Stop Services
 
@@ -42,8 +40,8 @@ sudo init 6
 ### Through Monit (Start/Stop/Monitor)
 Start monit daemon:
 ```
-monit -c /apps/htmm/.monitrc  
-```
+monit -c /apps/htmm/.monitrc 
+``` 
 
 Start all services:
 ```
@@ -68,9 +66,9 @@ Start httpd
 /usr/sbin/httpd -k start -f  /apps/htmm/cdl-env/httpd-passenger.conf
 ```
 
-Stop htppd
+Stop httpd
 ```
-  /usr/sbin/httpd -k stop -f  /apps/htmm/cdl-env/httpd-passenger.conf
+/usr/sbin/httpd -k stop -f  /apps/htmm/cdl-env/httpd-passenger.conf
 ```
 
 ## Requirements
@@ -100,22 +98,23 @@ The permissions for the public key (.pub file) should be 644 (rw-r-r--).
 For the private key (id_rsa) the permission should be 600 (rw------).
 
 Add the public key to the authorized_keys file of d2d-zephir-dev and/or d2d-zephir-stg for passwordless scp commands listed in step 2).
+```
     cd ~
     mkdir .ssh
     chmod 700 .ssh
     cd .ssh
     ssh-keygen
+```
 
 ### 2) Get the deploy keys and configuration file
 
 Copy over the zephir-api repository deploy keys (private and public key pairs) and the configuration file from zephir-dev or zephir-stg.
-Keys and configuration file:
+Keys and the configuration file are under the .ssh directory of the htmm account:
 * id_rsa_zephir-api
 * id_rsa_zephir-api.pub
 * config
 
 On d2d-zephir-prd:
-
 ```
 sudo su - htmm
 cd ~/.ssh/
@@ -132,13 +131,14 @@ Make sure the key files have the proper permissions:
 Change file permissions if needed.
 
 The SSH configuration file should have the following entries:
-
+```
 /apps/htmm/.ssh/config
 
 Host github.com-zephir-api
 HostName github.com
 User git
 IdentityFile ~/.ssh/id_rsa_zephir-api
+```
 
 ### 3) Install the application
 
