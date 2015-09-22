@@ -31,41 +31,35 @@ For example:
 
 The Zephir API service is provided through the Apache Web server. Start or stop the Apache Web server to enable or disable the service.
 
-### Start at Server Reboot
+#### Start at Server Reboot
 ```
 sudo su - htmm
 sudo init 6
 ```
-
-### Through Monit (Start/Stop/Monitor)
+#### Through Monit (Start/Stop/Monitor)
 Start monit daemon:
 ```
 monit -c /apps/htmm/.monitrc 
 ``` 
-
 Start all services:
 ```
 monit -c /apps/htmm/.monitrc start all
 ```
-
 Stop all services:
 ```
 monit -c /apps/htmm/.monitrc stop all 
 ```
-
 Check status:
 ```
 monit -c /apps/htmm/.monitrc status
 ```
-
 Note: Provide the control file /apps/htmm/.monitrc to the monit command. Otherwise monit will use it’s default which is /etc/monit.conf.
 
-### Through Apache httpd Start/Stop
+#### Through Apache httpd Start/Stop
 Start httpd
 ```
 /usr/sbin/httpd -k start -f  /apps/htmm/cdl-env/httpd-passenger.conf
 ```
-
 Stop httpd
 ```
 /usr/sbin/httpd -k stop -f  /apps/htmm/cdl-env/httpd-passenger.conf
@@ -87,17 +81,17 @@ This code has been run and tested on Ruby 2.1 and Sinatra 1.4.5.
 
 ## Installation
 
-Role account: htmm
-Home directory: /apps/htmm
+* Role account: htmm
+* Home directory: /apps/htmm
 
-### 1) Create SSH keys for the htmm account
+#### 1. Create SSH keys for the htmm account
 
 Create the .ssh directory for the htmm account if it does not exist. The .ssh directory permissions should be 700 (drwx------). 
 Create a public and private key sets for the htmm account if needed. 
 The permissions for the public key (.pub file) should be 644 (rw-r-r--). 
 For the private key (id_rsa) the permission should be 600 (rw------).
 
-Add the public key to the authorized_keys file of d2d-zephir-dev and/or d2d-zephir-stg for passwordless scp commands listed in step 2).
+Add the public key to the authorized_keys file of d2d-zephir-dev and/or d2d-zephir-stg for passwordless scp commands listed in step 2.
 ```
     cd ~
     mkdir .ssh
@@ -106,10 +100,10 @@ Add the public key to the authorized_keys file of d2d-zephir-dev and/or d2d-zeph
     ssh-keygen
 ```
 
-### 2) Get the deploy keys and configuration file
+#### 2. Get the deploy keys and configuration file
 
 Copy over the zephir-api repository deploy keys (private and public key pairs) and the configuration file from zephir-dev or zephir-stg.
-Keys and the configuration file are under the .ssh directory of the htmm account:
+The keys and the configuration file are under the .ssh directory of the htmm account:
 * id_rsa_zephir-api
 * id_rsa_zephir-api.pub
 * config
@@ -140,12 +134,11 @@ User git
 IdentityFile ~/.ssh/id_rsa_zephir-api
 ```
 
-### 3) Install the application
+#### 3. Install the application
 
 Zephir-API code repository: https://github.com/cdlib/zephir-api
 
 Home directory: /apps/htmm/apps
-
 ```
 sudo su - htmm
 cd ~
@@ -154,7 +147,7 @@ cd apps
 git clone git@github.com-zephir-api:cdlib/zephir-api.git
 ```
 
-### 4) Install prerequisites and dependencies 
+#### 4. Install prerequisites and dependencies 
 
 See Zephir Services README https://github.com/cdlib/zephir-services-cdl-env/ on how to install zephir-services-cdl-env a suite of configurations and tools to compliment the Zephir system. 
 This includes installation of the following items:
@@ -168,14 +161,14 @@ This includes installation of the following items:
 * Apache with Passenger
 * Process management infrastructure
 
-### 5) Install gem dependencies with bundler
+#### 5. Install gem dependencies with bundler
 
 ```
 cd ~/ apps/zephir-api/
 bundle install
 ```
 
-### 6) Setup database configuration file
+#### 6. Setup database configuration file
 
 Configuration file: zephir-api/config/database.yml
 
@@ -200,7 +193,7 @@ Note: Add development and production database instances accordingly.
 
 ## Tests
 
-### Confirm installation with the default Ruby Minitest framework. 
+#### 1. Confirm installation with the default Ruby Minitest framework. 
 
 ```
 cd /apps/htmm/apps/zephir-api
@@ -225,7 +218,7 @@ Finished in 0.080585s, 74.4557 runs/s, 260.5948 assertions/s.
 6 runs, 21 assertions, 0 failures, 0 errors, 0 skips
 ```
 
-### Confirm installation with WEBrick (web server):
+#### 2. Confirm installation with WEBrick (web server):
 
 Start the web server
 ```
