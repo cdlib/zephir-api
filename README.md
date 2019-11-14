@@ -1,5 +1,4 @@
-
-##Introduction
+## Introduction
 
 The Zephir API is a support service for Zephir, the HathiTrust metadata management system. 
 The API is a Sinatra-based web API that allows access to data not available through
@@ -14,7 +13,7 @@ When available, the following content types are supported:
 ## Readme and Information
 * README (information about the code)
 * API (information about the API provided by code)
-* /docs (generated code documentation. See beloy
+* /docs (generated code documentation. See below
 
 ## Access Services
 
@@ -67,13 +66,13 @@ Stop httpd
 
 ## Requirements
 
-This code has been run and tested on Ruby 2.1 and Sinatra 1.4.5.
+This code has been run and tested on Ruby 2.5.7 and Sinatra 2.0.7.
 
-* Ruby 2.1+
-* Sinatra 1.4.5+
+* Ruby 2.5.7
+* Sinatra 2.0.7
 * Bundler
-* Passenger
 * Apache
+* mod_passenger for Apache
 * sqlite3
 * mysql2
 * Gem dependencies
@@ -84,14 +83,14 @@ This code has been run and tested on Ruby 2.1 and Sinatra 1.4.5.
 * Role account: htmm
 * Home directory: /apps/htmm
 
-#### 1. Create SSH keys for the htmm account
+### 1. Create SSH keys for the htmm account
 
 Create the .ssh directory for the htmm account if it does not exist. The .ssh directory permissions should be 700 (drwx------). 
 Create a public and private key sets for the htmm account if needed. 
 The permissions for the public key (.pub file) should be 644 (rw-r-r--). 
 For the private key (id_rsa) the permission should be 600 (rw------).
 
-Add the public key to the authorized_keys file of d2d-zephir-dev and/or d2d-zephir-stg for passwordless scp commands listed in step 2.
+Add the public key to the authorized_keys file of d2d-zephir2-dev and/or d2d-zephir2-stg for passwordless scp commands listed in step 2.
 ```
     cd ~
     mkdir .ssh
@@ -100,23 +99,15 @@ Add the public key to the authorized_keys file of d2d-zephir-dev and/or d2d-zeph
     ssh-keygen
 ```
 
-#### 2. Get the deploy keys and configuration file
+### 2. Get the Git deploy keys and configuration file
 
-Copy over the zephir-api repository deploy keys (private and public key pairs) and the configuration file from zephir-dev or zephir-stg.
+Copy over the zephir-api and htmm-env repository deploy keys (private and public key pairs) and the configuration file from zephir-dev or zephir-stg.
 The keys and the configuration file are under the .ssh directory of the htmm account:
 * id_rsa_zephir-api
 * id_rsa_zephir-api.pub
+* id_rsa_cdl-env
+* id_rsa_cdl-env.pub
 * config
-
-On d2d-zephir-prd:
-```
-sudo su - htmm
-cd ~/.ssh/
-
-scp htmm@d2d-zephir-stg:/apps/htmm/.ssh/config ./
-scp htmm@d2d-zephir-stg:/apps/htmm/.ssh/id_rsa_zephir-api ./
-scp htmm@d2d-zephir-stg:/apps/htmm/.ssh/id_rsa_zephir-api.pub ./
-```
 
 Make sure the key files have the proper permissions:
 * Private key permission: 600
@@ -128,17 +119,36 @@ The SSH configuration file should have the following entries:
 ```
 /apps/htmm/.ssh/config
 
+Host github.com-cdl-env
+HostName github.com
+User git
+IdentityFile ~/.ssh/id_rsa_cdl-env
+
 Host github.com-zephir-api
 HostName github.com
 User git
 IdentityFile ~/.ssh/id_rsa_zephir-api
 ```
 
-#### 3. Install the application
+### 3. Install the application and prerequisites and dependencies 
 
-Zephir-API code repository: https://github.com/cdlib/zephir-api
+A script was created to automate the installation and configuration the following items:
+* Apache
+* Monit
+* Ruby
+* sqlite
+* mysql
+* Zephir-API
+* htmm-env/cdl-env - a suite of configurations and tools to compliment the Zephir system
+ 
+Readme:
+https://github.com/cdlib/htmm-env/blob/12579_zephir_linux2/hosts/zephir/linux2_migration/README.md
 
-Home directory: /apps/htmm/apps
+Script:
+https://github.com/cdlib/htmm-env/blob/12579_zephir_linux2/hosts/zephir/linux2_migration/zephir_linux2_migration.sh
+
+#### 3.1 Install the Zephir-API manually 
+
 ```
 sudo su - htmm
 cd ~
@@ -147,28 +157,85 @@ cd apps
 git clone git@github.com-zephir-api:cdlib/zephir-api.git
 ```
 
-#### 4. Install prerequisites and dependencies 
+#### 3.2 Install htmm-env/cdl-env manually
 
-See Zephir Services README https://github.com/cdlib/zephir-services-cdl-env/ on how to install zephir-services-cdl-env a suite of configurations and tools to compliment the Zephir system. 
-This includes installation of the following items:
+* 1st: clone htmm-env repository a suite of configurations and tools to compliment the Zephir system. 
+```
+sudo su - htmm
+cd ~
+git clone git@github.com-cdl-env:cdlib/htmm-env.git cdl-env
+```
+* 2nd: create symbolic links for the dot files
+  * .bash_profile
+  * .bashrc
+  * .forward
 
-* CDL environment configuration files from GitHub repository zephir-services-cdl-env
+#### 3.3 Install prerequisites and dependencies 
+
 * Ruby Manager and plugins
 * Dependencies for Ruby
-* Ruby 2.2.2
+* Ruby 2.5.7
 * Package dependency manager Bundler
 * Prerequisites
 * Apache with Passenger
 * Process management infrastructure
 
-#### 5. Install gem dependencies with bundler
+```
+  ## Check out rbenv and plugins into ~/local/bin/rbenv
+  git clone https://github.com/rbenv/rbenv.git ~/local/bin/rbenv
+  git clone https://github.com/rbenv/ruby-build.git ~/local/bin/rbenv/plugins/ruby-build
+
+  ## Install dependencies for Ruby
+  sudo yum install gcc gcc-c++
+  sudo yum install openssl-devel readline-devel zlib-devel
+
+  ## Install Ruby 2.5 for htmm
+  rbenv install 2.5.7
+
+  rbenv global 2.5.7
+  rbenv rehash
+
+  ## Install the package dependency manager Bundler
+  gem install bundler 
+
+  ## install apache
+  sudo yum remove httpd*
+
+  sudo yum install httpd
+  sudo yum install httpd-devel
+  sudo yum install apr-devel
+  sudo yum install apr-util-devel
+  sudo yum install libcurl-devel
+
+  ## Install Passenger module
+  gem install passenger -v=6.0.4 
+  passenger-install-apache2-module
+
+  sudo yum install https://kojipkgs.fedoraproject.org/packages/monit/5.14/1.el6/x86_64/monit-5.14-1.el6.x86_64.rpm
+
+  sudo yum install sqlite-devel
+  sudo yum install mysql-devel
+
+  ## Install MySQL 5.7
+  ## Step 1: Install the MySQL Yum Repository
+  sudo yum localinstall /net/homesrv/repo/pkgs/mysql/mysql80-community-release-el7-1.noarch.rpm
+
+  ## Step 2: Enable the MySQL version
+  sudo yum-config-manager --enable mysql57-community
+  sudo yum-config-manager --disable mysql80-community
+
+  ## Step 3: Use yum to install/update mysql packages
+  sudo yum install mysql-community-server
+```
+
+### 4. Install gem dependencies with bundler
 
 ```
 cd ~/ apps/zephir-api/
 bundle install
 ```
 
-#### 6. Setup database configuration file
+### 5. Setup database configuration file
 
 Configuration file: zephir-api/config/database.yml
 
