@@ -1,5 +1,4 @@
-
-##Introduction
+## Introduction
 
 The Zephir API is a support service for Zephir, the HathiTrust metadata management system. 
 The API is a Sinatra-based web API that allows access to data not available through
@@ -14,7 +13,7 @@ When available, the following content types are supported:
 ## Readme and Information
 * README (information about the code)
 * API (information about the API provided by code)
-* /docs (generated code documentation. See beloy
+* /docs (generated code documentation. See below
 
 ## Access Services
 
@@ -67,108 +66,30 @@ Stop httpd
 
 ## Requirements
 
-This code has been run and tested on Ruby 2.1 and Sinatra 1.4.5.
+This code has been run and tested on Ruby 2.5.7 and Sinatra 2.0.7.
 
-* Ruby 2.1+
-* Sinatra 1.4.5+
+* Ruby 2.5.7
+* Sinatra 2.0.7
 * Bundler
-* Passenger
 * Apache
+* mod_passenger for Apache
 * sqlite3
 * mysql2
 * Gem dependencies
 * zephir-services-cdl-env
 
 ## Installation
+See Zephir host readme for instructions on how to install and configure Zephir-API and required packages and environmentfiles. 
+https://github.com/cdlib/htmm-env/blob/master/hosts/zephir/README.md
 
-* Role account: htmm
-* Home directory: /apps/htmm
-
-#### 1. Create SSH keys for the htmm account
-
-Create the .ssh directory for the htmm account if it does not exist. The .ssh directory permissions should be 700 (drwx------). 
-Create a public and private key sets for the htmm account if needed. 
-The permissions for the public key (.pub file) should be 644 (rw-r-r--). 
-For the private key (id_rsa) the permission should be 600 (rw------).
-
-Add the public key to the authorized_keys file of d2d-zephir-dev and/or d2d-zephir-stg for passwordless scp commands listed in step 2.
-```
-    cd ~
-    mkdir .ssh
-    chmod 700 .ssh
-    cd .ssh
-    ssh-keygen
-```
-
-#### 2. Get the deploy keys and configuration file
-
-Copy over the zephir-api repository deploy keys (private and public key pairs) and the configuration file from zephir-dev or zephir-stg.
-The keys and the configuration file are under the .ssh directory of the htmm account:
-* id_rsa_zephir-api
-* id_rsa_zephir-api.pub
-* config
-
-On d2d-zephir-prd:
-```
-sudo su - htmm
-cd ~/.ssh/
-
-scp htmm@d2d-zephir-stg:/apps/htmm/.ssh/config ./
-scp htmm@d2d-zephir-stg:/apps/htmm/.ssh/id_rsa_zephir-api ./
-scp htmm@d2d-zephir-stg:/apps/htmm/.ssh/id_rsa_zephir-api.pub ./
-```
-
-Make sure the key files have the proper permissions:
-* Private key permission: 600
-* Public key permission: 640
-
-Change file permissions if needed.
-
-The SSH configuration file should have the following entries:
-```
-/apps/htmm/.ssh/config
-
-Host github.com-zephir-api
-HostName github.com
-User git
-IdentityFile ~/.ssh/id_rsa_zephir-api
-```
-
-#### 3. Install the application
-
-Zephir-API code repository: https://github.com/cdlib/zephir-api
-
-Home directory: /apps/htmm/apps
-```
-sudo su - htmm
-cd ~
-mkdir apps
-cd apps
-git clone git@github.com-zephir-api:cdlib/zephir-api.git
-```
-
-#### 4. Install prerequisites and dependencies 
-
-See Zephir Services README https://github.com/cdlib/zephir-services-cdl-env/ on how to install zephir-services-cdl-env a suite of configurations and tools to compliment the Zephir system. 
-This includes installation of the following items:
-
-* CDL environment configuration files from GitHub repository zephir-services-cdl-env
-* Ruby Manager and plugins
-* Dependencies for Ruby
-* Ruby 2.2.2
-* Package dependency manager Bundler
-* Prerequisites
-* Apache with Passenger
-* Process management infrastructure
-
-#### 5. Install gem dependencies with bundler
+## Install gem dependencies with bundler
 
 ```
 cd ~/ apps/zephir-api/
 bundle install
 ```
 
-#### 6. Setup database configuration file
+## Setup database configuration file
 
 Configuration file: zephir-api/config/database.yml
 
