@@ -35,33 +35,32 @@ The Zephir API service is provided through the Apache Web server. Start or stop 
 sudo su - htmm
 sudo init 6
 ```
-#### Through Monit (Start/Stop/Monitor)
-Start monit daemon:
+#### Through Start/Stop script
+Start
 ```
-monit -c /apps/htmm/.monitrc 
-``` 
-Start all services:
+~/init.d/zephir start apache
 ```
-monit -c /apps/htmm/.monitrc start all
+Stop
 ```
-Stop all services:
+~/init.d/zephir stop apache
 ```
-monit -c /apps/htmm/.monitrc stop all 
+Check status
 ```
-Check status:
+~/init.d/zephir status apache
 ```
-monit -c /apps/htmm/.monitrc status
-```
-Note: Provide the control file /apps/htmm/.monitrc to the monit command. Otherwise monit will use it’s default which is /etc/monit.conf.
 
 #### Through Apache httpd Start/Stop
 Start httpd
 ```
-/usr/sbin/httpd -k start -f  /apps/htmm/cdl-env/httpd-passenger.conf
+/usr/sbin/httpd -k start -f /apps/htmm/cdl-env/hosts/zephir/httpd-passenger.conf
 ```
 Stop httpd
 ```
-/usr/sbin/httpd -k stop -f  /apps/htmm/cdl-env/httpd-passenger.conf
+/usr/sbin/httpd -k stop -f /apps/htmm/cdl-env/hosts/zephir/httpd-passenger.conf
+```
+Check status:
+```
+ps -ef | grep httpd
 ```
 
 ## Requirements
