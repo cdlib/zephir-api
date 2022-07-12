@@ -5,7 +5,7 @@ ruby '2.5.7'
 gem "sinatra", :require => 'sinatra/base'
 gem "sinatra-activerecord"
 gem "sinatra-contrib", :require => 'sinatra/contrib/all'
-gem "activerecord", "~> 4.2.11.1"
+gem "activerecord", "~> 5.2.8.1"
 gem "mysql2"
 gem "rdiscount" #markdown support
 gem "yard-sinatra", :require => false # document generation
